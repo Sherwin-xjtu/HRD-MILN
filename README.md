@@ -1,2 +1,2 @@
 # HRD-MILN
-A tools to estimates HRD
+A tools to estimate HRD
