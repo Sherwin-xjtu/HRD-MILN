@@ -9,11 +9,7 @@ from sklearn import preprocessing
 
 
 def mergeFiles(path):
-    '''
-    name:getPathFile
-    function:获取所给文件夹下所有vcf文件路径
-    path：所给文件夹路径
-    '''
+
     labelPath = 'C:/Users/Sherwin/Desktop/label.csv'
     df1 = pd.read_csv(labelPath, sep=',', low_memory=False)
     keys = df1['id']
@@ -24,7 +20,7 @@ def mergeFiles(path):
         m = 0
         for allDir in pathDir:
             child = os.path.join('%s/%s' % (path, allDir))
-            # 跳过文件夹以及非流量包文件，将后缀名改为自己需要的文件类型即可实现自己的过滤
+
             if os.path.isfile(child) and (".cns" in str(allDir)) and ("副本" in str(allDir)):
                 id = child.split('/')[-1].split()[0]
                 if m == 0:
@@ -61,7 +57,5 @@ def mergeFiles(path):
 # tp_reader = pd.read_csv(tpDataFile, sep='\t', low_memory=False)
 # print(tp_reader['lcn.em'])
 path = 'C:/Users/Sherwin/Desktop/交大二HRD结果/all/'
-# keys = ["name","age","pay","job"]
-# values = ["张三",18,40000,"Python工程师"]
-# person = dict(zip(keys,values))
+
 mergeFiles(path)
