@@ -38,6 +38,10 @@ Uncompress the installation zip:
 
 ```sh
 $ python hrdmiln.py -i input.csv -o out.csv
+
+ # input.csv
+id	nhet	cnlr.median	mafR	mafR.clust	start	end	cf.em	tcn.em	lcn.em	label
+sample1	0.88028169	0.65996363	0.010544424	0.001475764	0.013368182	0.99936869	1	0.033898305	0.333333333	0
 ```
 
 
