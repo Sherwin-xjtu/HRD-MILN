@@ -19,6 +19,7 @@ from numpy import *
 from sklearn.metrics import classification_report
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
+import os
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -688,9 +689,8 @@ def load_fake_data(mat):
 def get_training_data(data_set):
     if data_set == "fake":
         training_data = MatlabTrainingData('F:/shenzhen/Sherwin/em-dd-master/training-data/musk1norm_matlab.mat', load_fake_data)
-    elif data_set == "csv":
-        # training_data = MatlabTrainingData('F:/shenzhen/Sherwin/HRD/all_scaler.csv', load_csv_data)
-        training_data = MatlabTrainingData('F:/HRD/HRD实验/HRD/all_s2.csv', load_csv_data)
+    elif data_set.endswith(".csv"):
+        training_data = MatlabTrainingData(data_set, load_csv_data)
     elif data_set == "musk1":
         training_data = MatlabTrainingData('C:/Users/Sherwin/Desktop/em-dd-master/training-data/musk1norm_matlab.mat', load_musk_data)
     elif data_set == "musk2":
@@ -716,7 +716,7 @@ def load_model(filename):
     """
     Load in trained model
     """
-    model_list = load(open(filename, 'rb'))
+    model_list = pickle.load(open(filename, 'rb'))
     model = model_list[0]
     modeln = model_list[1]
     return model, modeln
@@ -768,11 +768,7 @@ def roc(prediction_result,prediction_result_n):
     plt.plot(fpr03, tpr03, color='blue',
              lw=lw, label='ILM_INDEL_Test_stander(area = %0.2f)' % roc_auc03)  
 
-    # plt.plot(fpr02, tpr02, color='darkorange',
-    #          lw=lw, label='NA12878-GATK3-chr21_2000(area = %0.2f)' % roc_auc02)  
-    #
-    # plt.plot(fpr01, tpr01, color='lime',
-    #          lw=lw, label='NA12877(area = %0.2f)' % roc_auc01) 
+
     plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
@@ -781,24 +777,60 @@ def roc(prediction_result,prediction_result_n):
     plt.title('ROC Curve',font2)
     plt.legend(loc="lower right")
 
-    plt.savefig('C:/Users/Sherwin/Desktop/HRD/roc.png',dpi=600)
+    plt.savefig('roc.png',dpi=300)
+    
+def save_bag_prediction_to_csv(test_bags, prediction_result, output_file='test_bag_prediction_combined.csv'):
+    """
+    """
+    y_true = prediction_result[0]
+    y_pred = prediction_result[1]
+    proba = prediction_result[2]
 
+    rows = []
+    for i, bag in enumerate(test_bags):
+        row = {
+            'bag_id': bag.index,
+            'true_label': y_true[i],
+            'predicted_label': y_pred[i],
+            'probability': proba[i],
+        }
+        feature_matrix = [instance.features for instance in bag.instances]
+        feature_mean = pd.DataFrame(feature_matrix).mean()
+        for j, val in enumerate(feature_mean):
+            row[f'feature_{j+1}_mean'] = val
+        rows.append(row)
+
+    df = pd.DataFrame(rows)
+    df.to_csv(output_file, index=False)
+    print(f"✅ Combined bag-level prediction saved to {output_file}")
 
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser()
-    # #parser.add_argument('-v', '--vcf', help='input vcf file', required=True)
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--csv', help='input csv file which is from FACETS tool', required=True)
     # parser.add_argument('-n', '--points', help='Number of target concept points', required=True, type=int)
     # parser.add_argument('-s', '--modles', help='Number of bast modles', required=True, type=int)
-    # args = parser.parse_args()
-    #vcf_file = os.path.abspath(args.vcf)
+    parser.add_argument('-o', '--output', help='output file name', required=True)
+
+    args = parser.parse_args()
+    csv_file = os.path.abspath(args.csv)
+    output_file = os.path.abspath(args.output)
     # n = -args.points
     # s = args.modles
     n = -3
     s = 1
-    training_data = get_training_data('csv')
+    training_data = get_training_data(csv_file)
     test_bags = training_data.training_bags
-    pattern = 'train'
-    model_pkl = 'C:/Users/Sherwin/Desktop/HRD/FourPoints/trained_EMDDN21.pkl'
+    # pattern = 'train'
+    pattern = 'test'
+    # model_pkl = './HRDtest/FourPoints/trained_EMDDN21.pkl'
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    model_pkl = os.path.join(script_dir, 'HRDtest', 'FourPoints', 'trained_EMDDN21.pkl')
+
+
+    # with open(model_path, 'rb') as f:
+    #     model_pkl = load(f)
     if pattern == 'train':
         emdd = EMDD(training_data)
         training_results,training_results_n = emdd.train(n,perform_scaling=True)
@@ -806,14 +838,8 @@ if __name__ == "__main__":
         total_bags = len(test_bags)
         prediction_result = EMDD.predict(results=training_results, bags=test_bags, aggregate=Aggregate.avg)
         prediction_result_n = EMDD.predict_n(results_n=training_results_n,bags=test_bags)
-        if prediction_result_n.accuracy >0.84 and prediction_result_n.precision > 0.84 and prediction_result_n.recall > 0.84:
-            pickle.dump([training_results, training_results_n], open('trained_EMDDN' + str(s) + '.pkl', 'wb'))
-            fw = open('result'+str(s)+'.csv', 'w')
-            buffList = [str(prediction_result.true_positives),str(prediction_result_n.true_positives),str(prediction_result.false_positives),str(prediction_result_n.false_positives),str(prediction_result.true_negatives),str(prediction_result_n.true_negatives),str(prediction_result.false_negatives),str(prediction_result_n.false_negatives),str(prediction_result.accuracy),str(prediction_result_n.accuracy),str(prediction_result.precision),str(prediction_result_n.precision),str(prediction_result.recall),str(prediction_result_n.recall)]
-            newBuff = ','.join(buffList)+'\n'
-            fw.write(newBuff)
-            fw.close()
-    else:
+
+    elif pattern == 'test':
         model, modeln = load_model(model_pkl)
         model2 = []
         model3 = []
@@ -822,6 +848,9 @@ if __name__ == "__main__":
         for i in modeln:
             model3.append(i[1:])
         prediction_result = EMDD.predict(results=model, bags=test_bags, aggregate=Aggregate.avg)
+        save_bag_prediction_to_csv(test_bags, prediction_result, output_file)
+        exit()
+
         prediction_result_4 = EMDD.predict_n(results_n=modeln, bags=test_bags)
         prediction_result_2 = EMDD.predict_n(results_n=model2, bags=test_bags)
         prediction_result_3 = EMDD.predict_n(results_n=model3, bags=test_bags)
@@ -829,17 +858,17 @@ if __name__ == "__main__":
         y_pred = prediction_result[1]
         target = [' falsely variable', 'truly  variable']
         report1 = classification_report(y_true, y_pred, target_names=target)
-        print("单个目标点性能报告：\n {0}".format(report1))
+        print("Single Target Point Performance Report: \n {0}".format(report1))
         y_true_2 = prediction_result_2 [0]
         y_pred_2  = prediction_result_2 [1]
         report2 = classification_report(y_true_2, y_pred_2, target_names=target)
-        print("2个目标点性能报告：\n {0}".format(report2))
+        print("Two Target Poins Performance Report: \n {0}".format(report2))
         y_true_3 = prediction_result_3[0]
         y_pred_3 = prediction_result_3[1]
         report3 = classification_report(y_true_3, y_pred_3, target_names=target)
-        print("3个目标点性能报告：\n {0}".format(report3))
+        print("Three Target Points Performance Report: \n {0}".format(report3))
         y_true_4 = prediction_result_4[0]
         y_pred_4 = prediction_result_4[1]
         report4 = classification_report(y_true_4, y_pred_4, target_names=target)
-        print("4个目标点性能报告：\n {0}".format(report4))
+        print("Four Target Poins Performance Report: \n {0}".format(report4))
         # roc(prediction_result, prediction_result_n)
