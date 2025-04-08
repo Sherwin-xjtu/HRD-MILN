@@ -37,7 +37,7 @@ Uncompress the installation zip:
 
 
 ```sh
-$ python hrdmiln.py -i input.csv -o out_dir
+$ python hrdmiln.py -i input.csv -o out.csv
 ```
 
 
