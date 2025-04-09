@@ -53,9 +53,7 @@ def mergeFiles(path):
     tm.to_csv(path + 'allFeatures.csv', index=False)
     dfa.to_csv(path+'allFeatures_s.csv',index=False)
 
-# tpDataFile = 'C:/Users/Sherwin/Desktop/交大二HRD结果/all/S20111157FD01_S20111157FD01L01_AHVCV5DMXX_1T.cns'
-# tp_reader = pd.read_csv(tpDataFile, sep='\t', low_memory=False)
-# print(tp_reader['lcn.em'])
-path = 'C:/Users/Sherwin/Desktop/交大二HRD结果/all/'
+
+path = ''
 
 mergeFiles(path)
