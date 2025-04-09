@@ -10,7 +10,7 @@ from sklearn import preprocessing
 
 def mergeFiles(path):
 
-    labelPath = 'C:/Users/Sherwin/Desktop/label.csv'
+    labelPath = 'label.csv'
     df1 = pd.read_csv(labelPath, sep=',', low_memory=False)
     keys = df1['id']
     values = df1['label']
