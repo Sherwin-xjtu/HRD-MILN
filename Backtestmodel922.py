@@ -5,10 +5,6 @@ import pandas as pd
 from multiprocessing import Pool, Manager
 import traceback
 
-# useFeatures = []
-# with open("E:/stock_predict/stock_data/20200922/config/use_feature.txt", "r") as fin:
-#     for line in fin:
-#         useFeatures.append(line.strip("\n"))
 
 
 def formatOrderTime(orderTime):
