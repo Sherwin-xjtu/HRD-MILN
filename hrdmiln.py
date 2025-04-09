@@ -159,38 +159,7 @@ class EMDD:
                 predType_list.append(0)
                 proba_list.append(1 - proba)
         return true_type, predType_list, proba_list
-        #     if len(instances) > 0:
-        #         if bags[i].is_positive():
-        #             true_positives += 1
-        #         else:
-        #             false_positives += 1
-        #         positive_bag_indexes.append(i)
-        #     else:
-        #         if bags[i].is_positive():
-        #             false_negatives += 1
-        #         else:
-        #             true_negatives += 1
-        # if true_positives == 0 and false_positives == 0:
-        #     precision = 1
-        # else:
-        #     precision = true_positives / (true_positives + false_positives)
-        # if true_positives == 0 and false_negatives == 0:
-        #     recall = 0
-        # else:
-        #     recall = true_positives / (true_positives + false_negatives)
-        # return PredictionResult(
-        #     bags=positive_bag_indexes,
-        #     actual_positive_bags=actual_positive_bags,
-        #     actual_negative_bags=actual_negative_bags,
-        #     true_positives=true_positives,
-        #     true_negatives=true_negatives,
-        #     false_positives=false_positives,
-        #     false_negatives=false_negatives,
-        #     accuracy=(true_positives + true_negatives) / total_bags,
-        #     precision=precision,
-        #     recall=recall
-        # )
-
+       
     @staticmethod
     def predict_proba(instance_probabilities):
         # total = 0
@@ -236,37 +205,7 @@ class EMDD:
                 predType_list.append(0)
                 proba_list.append(1-proba)
         return true_type,predType_list,proba_list
-            # if len(instances) > 0:
-            #     if bags[i].is_positive():
-            #         true_positives += 1
-            #     else:
-            #         false_positives += 1
-            #     positive_bag_indexes.append(i)
-            # else:
-            #     if bags[i].is_positive():
-            #         false_negatives += 1
-            #     else:
-            #         true_negatives += 1
-        # if true_positives == 0 and false_positives == 0:
-        #     precision = 1
-        # else:
-        #     precision = true_positives / (true_positives + false_positives)
-        # if true_positives == 0 and false_negatives == 0:
-        #     recall = 0
-        # else:
-        #     recall = true_positives / (true_positives + false_negatives)
-        # return PredictionResult(
-        #     bags=positive_bag_indexes,
-        #     actual_positive_bags=actual_positive_bags,
-        #     actual_negative_bags=actual_negative_bags,
-        #     true_positives=true_positives,
-        #     true_negatives=true_negatives,
-        #     false_positives=false_positives,
-        #     false_negatives=false_negatives,
-        #     accuracy=(true_positives + true_negatives) / total_bags,
-        #     precision=precision,
-        #     recall=recall
-        # )
+          
 
     @staticmethod
     def quick_sort(arr, low, high):
@@ -627,9 +566,7 @@ def load_csv_data(csv_reader):
         if not bag.is_positive() and csv_reader["label"][it_bag_ids.index] == 1:
             bag.label = 1
         it_bag_ids.iternext()
-    # for i in list(bag_map.values()):
-    #     print(i.index,i.label)
-    # exit()
+
     return {
         "training_bags": list(bag_map.values()),
         "test_bags": list(bag_map.values())
@@ -722,32 +659,22 @@ def load_model(filename):
     return model, modeln
 
 def roc_computer(prediction):
-    # X_test = reader.drop(['type'], 1)
-    # y_test = reader['type']
-    # X_test = X_test.values
-    # y_score = clf.predict_proba(X_test)
-    # Compute ROC curve and ROC area for each class
+
     y_test = prediction[0]
     y_score = prediction[1]
     fpr, tpr, threshold = roc_curve(y_test,y_score)  
     return fpr, tpr, threshold
 
 def roc(prediction_result,prediction_result_n):
-    # Compute ROC curve and ROC area for each class
     fpr04, tpr04, threshold04 = roc_computer(prediction_result)
     roc_auc04 = auc(fpr04, tpr04)
     fpr03, tpr03, threshold03 = roc_computer(prediction_result_n)
     roc_auc03 = auc(fpr03, tpr03) 
-    # fpr02, tpr02, threshold02 = roc_computer(tri02_clt,reader02)
-    # roc_auc02 = auc(fpr02, tpr02)
-    # fpr01, tpr01, threshold01 = roc_computer(tri01_clt, reader01)
-    # roc_auc01 = auc(fpr01, tpr01)
+
     lw = 2
-    # plt.figure(figsize=(10, 10))
 
     figsize = 10, 10
     figure, ax = plt.subplots(figsize=figsize)
-    # plt.figure(figsize=(10, 10))
 
     plt.tick_params(labelsize=23)
     labels = ax.get_xticklabels() + ax.get_yticklabels()
@@ -764,7 +691,6 @@ def roc(prediction_result,prediction_result_n):
              }
     plt.plot(fpr04, tpr04, color='fuchsia',
              lw=lw, label='NA12878(area = %0.2f)' % roc_auc04)  
-    #
     plt.plot(fpr03, tpr03, color='blue',
              lw=lw, label='ILM_INDEL_Test_stander(area = %0.2f)' % roc_auc03)  
 
@@ -808,15 +734,12 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--csv', help='input csv file which is from FACETS tool', required=True)
-    # parser.add_argument('-n', '--points', help='Number of target concept points', required=True, type=int)
-    # parser.add_argument('-s', '--modles', help='Number of bast modles', required=True, type=int)
     parser.add_argument('-o', '--output', help='output file name', required=True)
 
     args = parser.parse_args()
     csv_file = os.path.abspath(args.csv)
     output_file = os.path.abspath(args.output)
-    # n = -args.points
-    # s = args.modles
+
     n = -3
     s = 1
     training_data = get_training_data(csv_file)
