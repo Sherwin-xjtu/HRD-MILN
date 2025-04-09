@@ -25,7 +25,7 @@ VERSION = '1.0.1'
 def get_indel_work_sh(root_dir,work_dir):
     f = open(work_dir+'/getIndelWork00000.sh', 'w')
     
-    list = os.listdir(root_dir)  # 列出文件夹下所有的目录与文件
+    list = os.listdir(root_dir) 
     j = 0
     
     for i in range(0, len(list)):
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     
     f = open('emddn.sh', 'w')
     for i in range(0, 50):
-        f.write('/usr/local/bin/python3 emddNew3.py -n 4 -s '+str(i)+"\n")
+        f.write('python3 emddNew3.py -n 4 -s '+str(i)+"\n")
     f.close()
 
 
