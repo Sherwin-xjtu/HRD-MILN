@@ -688,25 +688,25 @@ def load_fake_data(mat):
 
 def get_training_data(data_set):
     if data_set == "fake":
-        training_data = MatlabTrainingData('F:/shenzhen/Sherwin/em-dd-master/training-data/musk1norm_matlab.mat', load_fake_data)
+        training_data = MatlabTrainingData('/training-data/musk1norm_matlab.mat', load_fake_data)
     elif data_set.endswith(".csv"):
         training_data = MatlabTrainingData(data_set, load_csv_data)
     elif data_set == "musk1":
-        training_data = MatlabTrainingData('C:/Users/Sherwin/Desktop/em-dd-master/training-data/musk1norm_matlab.mat', load_musk_data)
+        training_data = MatlabTrainingData('/training-data/musk1norm_matlab.mat', load_musk_data)
     elif data_set == "musk2":
-        training_data = MatlabTrainingData('C:/Users/Sherwin/Desktop/em-dd-master/training-data/musk2norm_matlab.mat', load_musk_data)
+        training_data = MatlabTrainingData('/training-data/musk2norm_matlab.mat', load_musk_data)
     elif data_set == "synth1":
-        training_data = MatlabTrainingData('C:/Users/Sherwin/Desktop/em-dd-master/training-data/synth_data_1.mat', load_synth_data)
+        training_data = MatlabTrainingData('/training-data/synth_data_1.mat', load_synth_data)
     elif data_set == "synth4":
-        training_data = MatlabTrainingData('C:/Users/Sherwin/Desktop/em-dd-master/training-data/synth_data_4.mat', load_synth_data)
+        training_data = MatlabTrainingData('/training-data/synth_data_4.mat', load_synth_data)
     elif data_set == "dr":
-        training_data = MatlabTrainingData('C:/Users/Sherwin/Desktop/em-dd-master/training-data/DR_data.mat', load_dr_data)
+        training_data = MatlabTrainingData('/training-data/DR_data.mat', load_dr_data)
     elif data_set == "elephant":
-        training_data = MatlabTrainingData('C:/Users/Sherwin/Desktop/em-dd-master/training-data/elephant_100x100_matlab.mat', load_animal_data)
+        training_data = MatlabTrainingData('/training-data/elephant_100x100_matlab.mat', load_animal_data)
     elif data_set == "fox":
-        training_data = MatlabTrainingData('C:/Users/Sherwin/Desktop/em-dd-master/training-data/fox_100x100_matlab.mat', load_animal_data)
+        training_data = MatlabTrainingData('/training-data/fox_100x100_matlab.mat', load_animal_data)
     elif data_set == "tiger":
-        training_data = MatlabTrainingData('C:/Users/Sherwin/Desktop/em-dd-master/training-data/tiger_100x100_matlab.mat', load_animal_data)
+        training_data = MatlabTrainingData('/training-data/tiger_100x100_matlab.mat', load_animal_data)
     else:
         raise ValueError("Unknown data set. Use one of fake, musk1, musk2, synth1, synth4, dr, elephant, tiger, or fox")
 
